@@ -1,0 +1,42 @@
+#! /bin/bash
+
+PWD=$(pwd)
+VENVDIR=".venv"
+
+# if a "venv" already exists, use it instead of ".venv"
+if [ -d "$PWD/venv" ]; then
+  VENVDIR="venv"
+fi
+
+# setup venv
+VENVPATH="$PWD/$VENVDIR"
+if [ ! -d "$VENVPATH" ]; then
+  python3 -m venv "$VENVPATH"
+else
+  echo "$VENVDIR already exists"
+fi
+
+# activate the environment
+activate () {
+  source "$VENVPATH/bin/activate"
+  echo "Activated $VENVDIR at $VENVPATH"
+}
+
+activate
+
+# install requirements
+echo ""
+pip install -r requirements.txt
+
+# set environment variables
+if [ -e .env ]; then
+  echo ""
+  while IFS== read -r key value; do
+    # Skip lines that start with '#' or are blank
+    [[ $key =~ ^#.* ]] || [[ -z $key ]] && continue
+    printf -v "$key" "%s" "$value" && export "$key"
+    echo "exported $key"
+  done < .env
+else
+  echo "No .env file found"
+fi
