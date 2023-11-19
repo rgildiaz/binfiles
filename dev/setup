@@ -9,6 +9,7 @@ if [ -d "$PWD/venv" ]; then
 fi
 
 # setup venv
+echo ""
 VENVPATH="$PWD/$VENVDIR"
 if [ ! -d "$VENVPATH" ]; then
   python3 -m venv "$VENVPATH"
@@ -26,11 +27,15 @@ activate
 
 # install requirements
 echo ""
-pip install -r requirements.txt
+if [ -e "$PWD/requirements.txt"]; then
+  pip install -r requirements.txt
+else 
+  echo "No requirements.txt found"
+fi
 
 # set environment variables
+echo ""
 if [ -e .env ]; then
-  echo ""
   while IFS== read -r key value; do
     # Skip lines that start with '#' or are blank
     [[ $key =~ ^#.* ]] || [[ -z $key ]] && continue
