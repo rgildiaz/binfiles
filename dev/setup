@@ -27,21 +27,22 @@ activate
 
 # install requirements
 echo ""
-if [ -e "$PWD/requirements.txt"]; then
+if [ -e "$PWD/requirements.txt" ]; then
   pip install -r requirements.txt
 else 
   echo "No requirements.txt found"
 fi
-
 # set environment variables
 echo ""
 if [ -e .env ]; then
-  while IFS== read -r key value; do
-    # Skip lines that start with '#' or are blank
+  echo ""
+  while IFS== read -r key value || [[ -n $key ]]; do
+    # Skip lines that start with '#' or are empty
     [[ $key =~ ^#.* ]] || [[ -z $key ]] && continue
     printf -v "$key" "%s" "$value" && export "$key"
     echo "exported $key"
-  done < .env
+  done < <(grep -v '^#' .env)
 else
   echo "No .env file found"
 fi
+
