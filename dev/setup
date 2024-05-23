@@ -1,6 +1,6 @@
 #! /bin/bash
 
-PWD=$(pwd)
+PWD=$(pwd -P)
 VENVDIR=".venv"
 
 # if a "venv" already exists, use it instead of ".venv"
